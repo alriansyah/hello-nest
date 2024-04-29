@@ -74,6 +74,16 @@ export class UserController {
         return 'get user sample';
     }
 
+    // Support async
+    @Get('/async')
+    async getAsync(): Promise<string> {
+        try {
+            return 'get user async';
+        } catch (error) {
+            return error;
+        }
+    }
+
     @Put()
     put(): string {
         return 'put user';
