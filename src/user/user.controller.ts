@@ -27,6 +27,11 @@ export class UserController {
     return req.cookies['name'];
   }
 
+  @Get('/view/hello')
+  viewHello(@Query('name') name: string, @Res() response: Response) {
+    response.render('index.html', { title: 'Hello Nest', name: name });
+  }
+
   @Post()
   post(): string {
     return 'post user';
