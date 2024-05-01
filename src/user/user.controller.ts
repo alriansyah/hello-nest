@@ -11,32 +11,30 @@ import {
   HttpCode,
   HttpRedirectResponse,
   Redirect,
+  Inject,
+  Optional,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { UserService } from './user.service';
 
 @Controller('/api/user')
 export class UserController {
-  // Management cookie
-  @Get('/set-cookie')
-  setCookie(@Query('name') name: string, @Res() response: Response) {
-    response.cookie('name', name);
-    response.status(200).send('Success set cookie');
-  }
+  // Constructor based injection
+  // constructor(private service: UserService) {}
 
-  @Get('/get-cookie')
-  getCookie(@Req() req: Request) {
-    return req.cookies['name'];
-  }
-
-  // Management view
-  @Get('/view/hello')
-  viewHello(@Query('name') name: string, @Res() response: Response) {
-    response.render('index.html', { title: 'Hello Nest', name: name });
-  }
+  // Property based injection
+  // @Inject()
+  // @Optional() // jika ingin optional
+  // private service: UserService;
 
   @Post()
   post(): string {
     return 'post user';
+  }
+
+  @Get('/hello')
+  async sayHello(@Query('name') name: string): Promise<string> {
+    return this.service.sayHello(name);
   }
 
   // @Get('/sample-response')
@@ -103,8 +101,21 @@ export class UserController {
     }
   }
 
-  @Put()
-  put(): string {
-    return 'put user';
+  // Management cookie
+  @Get('/set-cookie')
+  setCookie(@Query('name') name: string, @Res() response: Response) {
+    response.cookie('name', name);
+    response.status(200).send('Success set cookie');
+  }
+
+  @Get('/get-cookie')
+  getCookie(@Req() req: Request) {
+    return req.cookies['name'];
+  }
+
+  // Management view
+  @Get('/view/hello')
+  viewHello(@Query('name') name: string, @Res() response: Response) {
+    response.render('index.html', { title: 'Hello Nest', name: name });
   }
 }
