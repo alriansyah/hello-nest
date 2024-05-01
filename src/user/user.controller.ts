@@ -16,6 +16,7 @@ import { Response, Request } from 'express';
 
 @Controller('/api/user')
 export class UserController {
+  // Management cookie
   @Get('/set-cookie')
   setCookie(@Query('name') name: string, @Res() response: Response) {
     response.cookie('name', name);
@@ -27,6 +28,7 @@ export class UserController {
     return req.cookies['name'];
   }
 
+  // Management view
   @Get('/view/hello')
   viewHello(@Query('name') name: string, @Res() response: Response) {
     response.render('index.html', { title: 'Hello Nest', name: name });
@@ -93,9 +95,9 @@ export class UserController {
 
   // Support async
   @Get('/async')
-  async getAsync(): Promise<string> {
+  async getAsync(first_name: string, last_name: string): Promise<string> {
     try {
-      return 'get user async';
+      return `${first_name || ''} ${last_name || ''}`;
     } catch (error) {
       return error;
     }
