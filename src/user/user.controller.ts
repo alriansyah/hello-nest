@@ -20,7 +20,7 @@ import { UserService } from './user.service';
 @Controller('/api/user')
 export class UserController {
   // Constructor based injection
-  // constructor(private service: UserService) {}
+  constructor(private service: UserService) {}
 
   // Property based injection
   // @Inject()
