@@ -16,11 +16,20 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
+import { Connection } from './connection/connection';
+import { MailService } from './mail/mail.service';
+import { UserRepository } from './user-repository/user-repository';
 
 @Controller('/api/user')
 export class UserController {
-  // Constructor based injection
-  constructor(private service: UserService) {}
+  // Constructor based injection : ini yang direkomendasikan
+  constructor(
+    private service: UserService,
+    private connection: Connection,
+    private mailService: MailService,
+    @Inject('EmailService') private emailService: MailService,
+    private userRepository: UserRepository,
+  ) {}
 
   // Property based injection
   // @Inject()
@@ -35,6 +44,14 @@ export class UserController {
   @Get('/hello')
   async sayHello(@Query('name') name: string): Promise<string> {
     return this.service.sayHello(name);
+  }
+
+  @Get('/connection')
+  async getConnection(): Promise<string> {
+    this.userRepository.save();
+    this.mailService.send();
+    this.emailService.send();
+    return this.connection.getName();
   }
 
   // @Get('/sample-response')
