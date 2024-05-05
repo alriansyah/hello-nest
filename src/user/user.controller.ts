@@ -19,6 +19,7 @@ import { UserService } from './user.service';
 import { Connection } from './connection/connection';
 import { MailService } from './mail/mail.service';
 import { UserRepository } from './user-repository/user-repository';
+import { MemberService } from './member/member.service';
 
 @Controller('/api/user')
 export class UserController {
@@ -29,6 +30,7 @@ export class UserController {
     private mailService: MailService,
     @Inject('EmailService') private emailService: MailService,
     private userRepository: UserRepository,
+    private memberService: MemberService,
   ) {}
 
   // Property based injection
@@ -51,6 +53,8 @@ export class UserController {
     this.userRepository.save();
     this.mailService.send();
     this.emailService.send();
+    console.log(this.memberService.getConnectionName());
+    this.memberService.sendEmail();
     return this.connection.getName();
   }
 
