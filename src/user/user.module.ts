@@ -3,6 +3,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import {
   Connection,
+  createConnection,
   MongoDBConnection,
   MySqlConnection,
 } from './connection/connection';
@@ -12,17 +13,23 @@ import {
   UserRepository,
 } from './user-repository/user-repository';
 import { MemberService } from './member/member.service';
-import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   controllers: [UserController],
   providers: [
     UserService,
+    // {
+    //   // Class provider
+    //   provide: Connection,
+    //   useClass:
+    //     process.env.DATABASE == 'mysql' ? MySqlConnection : MongoDBConnection,
+    // },
     {
-      // Class provider
+      // Factory provider
       provide: Connection,
-      useClass:
-        process.env.DATABASE == 'mysql' ? MySqlConnection : MongoDBConnection,
+      useFactory: createConnection,
+      inject: [ConfigService],
     },
     {
       // Value provider
@@ -32,7 +39,7 @@ import * as process from 'process';
     {
       // Alias provider
       provide: 'EmailService',
-      useExisting: MailService
+      useExisting: MailService,
     },
     {
       // Factory provider
