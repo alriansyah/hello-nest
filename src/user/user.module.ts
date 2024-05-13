@@ -8,14 +8,13 @@ import {
   MySqlConnection,
 } from './connection/connection';
 import { mailService, MailService } from './mail/mail.service';
-import {
-  createRepository,
-  UserRepository,
-} from './user-repository/user-repository';
+import { UserRepository } from './user-repository/user-repository';
 import { MemberService } from './member/member.service';
 import { ConfigService } from '@nestjs/config';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
+  imports: [PrismaModule],
   controllers: [UserController],
   providers: [
     UserService,
@@ -41,14 +40,9 @@ import { ConfigService } from '@nestjs/config';
       provide: 'EmailService',
       useExisting: MailService,
     },
-    {
-      // Factory provider
-      provide: UserRepository,
-      useFactory: createRepository,
-      inject: [Connection],
-    },
+    UserRepository,
     MemberService,
   ],
-  exports: [UserService]
+  exports: [UserService],
 })
 export class UserModule {}

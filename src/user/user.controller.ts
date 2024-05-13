@@ -2,7 +2,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Body,
   Param,
   Query,
   Res,
@@ -12,7 +12,6 @@ import {
   HttpRedirectResponse,
   Redirect,
   Inject,
-  Optional,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
@@ -20,6 +19,7 @@ import { Connection } from './connection/connection';
 import { MailService } from './mail/mail.service';
 import { UserRepository } from './user-repository/user-repository';
 import { MemberService } from './member/member.service';
+import { User } from '@prisma/client';
 
 @Controller('/api/user')
 export class UserController {
@@ -50,12 +50,19 @@ export class UserController {
 
   @Get('/connection')
   async getConnection(): Promise<string> {
-    this.userRepository.save();
     this.mailService.send();
     this.emailService.send();
     console.log(this.memberService.getConnectionName());
     this.memberService.sendEmail();
     return this.connection.getName();
+  }
+
+  @Post('/create-user')
+  async createUser(
+    @Body('firstName') firstName: string = 'John',
+    @Body('lastName') lastName: string = 'Doe',
+  ): Promise<User> {
+    return await this.userRepository.save(firstName, lastName);
   }
 
   // @Get('/sample-response')
