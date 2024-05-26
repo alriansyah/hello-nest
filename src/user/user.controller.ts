@@ -14,6 +14,8 @@ import {
   Inject,
   UseFilters,
   HttpException,
+  ParseIntPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
@@ -23,6 +25,8 @@ import { UserRepository } from './user-repository/user-repository';
 import { MemberService } from './member/member.service';
 import { User } from '@prisma/client';
 import { ValidationFilter } from 'src/validation/validation.filter';
+import { LoginUserRequest, LoginUserRequestValidation } from 'src/model/login.model';
+import { ValidationPipe } from 'src/validation/validation.pipe';
 
 @Controller('/api/user')
 export class UserController {
@@ -51,6 +55,13 @@ export class UserController {
   async sayHello(@Query('name') name: string): Promise<string> {
     return this.service.sayHello(name);
   }
+
+  @UsePipes(new ValidationPipe(LoginUserRequestValidation))
+  @UseFilters(ValidationFilter)
+  @Post('/login')
+  async login(@Query('name') name: string, @Body() request: LoginUserRequest): Promise<string> {
+    return `Hello ${request.username}!`;
+  } 
 
   @Get('/connection')
   async getConnection(): Promise<string> {
@@ -104,8 +115,10 @@ export class UserController {
   // }
 
   @Get('/detail/:id')
-  getUserParam(@Param('id') id: string): string {
+  getById(@Param('id', ParseIntPipe) id: number): string { // Pipe bisa digunakan di @Param, @Query, @Body
     // menggunakan decorator
+    console.log(id * 2);
+    
     return `Param: ${id}`;
   }
 
