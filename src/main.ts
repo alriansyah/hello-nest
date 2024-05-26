@@ -20,6 +20,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new ValidationFilter);
   // app.useGlobalPipes() // harus hati-hati jika menggunakan global
+  // app.useGlobalInterceptors(); // harus hati-hati jika menggunakan global
 
   const configService = app.get(ConfigService);
 
